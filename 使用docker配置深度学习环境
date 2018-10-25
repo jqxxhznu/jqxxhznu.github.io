@@ -1,0 +1,78 @@
+2018.10.20 测试成功 配置是ubuntu16.04+gtx750ti 已经装好了nvidia的驱动
+
+0.如果之前安装过Docker的旧版本，可以使用下面的命令进行卸载：
+sudo apt-get remove docker docker-engine docker.io
+1.安装Docker-ce
+Step 0:添加阿里Docker镜像源
+    step 1: 安装必要的一些系统工具
+           sudo apt-get update
+           sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common
+    step 2: 安装GPG证书
+           curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+    step 3: 写入软件源信息
+           sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release            -cs) stable"
+    step 4: 更新并安装 Docker-CE
+           sudo apt-get -y update
+           sudo apt-get -y install docker-ce
+
+Step 1: 安装必要的一些系统工具
+sudo apt-get update sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common 
+
+Step 2:安装GPG证书
+curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add - 
+
+Step 3: 写入软件源信息
+sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable" 
+
+Step 4: 
+更新并安装 Docker-CE sudo apt-get -y update sudo apt-get -y install docker-ce
+
+Step 5:验证安装成功
+输入 docker version 可以出现版本信息
+
+安装Nvidia-Docker需要18.06以上版本，如果安装低于这个版本，用
+sudo apt-get remove docker docker-engine docker.io 
+卸载低版本
+
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+这个命令重新安装即可
+
+
+2.安装Nvidia-Docker
+Step 0:之前有安装过Nvidia-Docker 1.0版本的，先卸载掉
+docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
+sudo apt-get purge -y nvidia-docker
+
+Step 1:添加软件包库（速度慢的话需要翻墙）
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+
+Step 3:安装nvidia-docker2
+sudo apt-get install -y nvidia-docker2
+sudo pkill -SIGHUP dockerd
+
+Step 4: 从Docker 中国官方镜像上pull一个cuda镜像试试看
+docker pull registry.docker-cn.com/nvidia/cuda
+
+Step 5:验证
+docker images 列出所有的镜像
+docker run -t -i nvidia/cuda  nvidia/cuda是第四步安装的
+nvcc -v 出现Cuda信息即为安装成功
+ctrl+D 退出界面
+
+3.安装deepo深度学习镜像
+docker pull ufoym/deepo 9g左右，安装时间会比较长
+docker run -t -i ufoym/deepo 运行deepo
+验证：
+   $ caffe --version  caffe环境
+   $ th               pytorch环境
+   
+  
+
+
+
+
