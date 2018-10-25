@@ -1,0 +1,11 @@
+实践学长的教程可行 2018.10.18
+# uninstall cuDnn
+sudo rm -rf /usr/local/cuda/include/cudnn.h
+sudo rm -rf /usr/local/cuda/lib64/libcudnn*
+
+# install cuDnn
+cd cuda #cd到解压好的cuda文件目录下
+sudo cp include/cudnn.h /usr/local/cuda/include/
+sudo cp lib64/lib* /usr/local/cuda/lib64/
+sudo chmod a+r /usr/local/cuda/include/cudnn.h
+sudo chmod a+r /usr/local/cuda/lib64/libcudnn*
