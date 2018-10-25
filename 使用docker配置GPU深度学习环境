@@ -1,4 +1,4 @@
-2018.10.20 测试成功 配置是ubuntu16.04+gtx750ti 已经装好了nvidia的驱动
+2018.10.20 测试成功 配置是ubuntu16.04+gtx750ti 已经装好了nvidia的驱动  刘泽豪
 
 0.如果之前安装过Docker的旧版本，可以使用下面的命令进行卸载：
 sudo apt-get remove docker docker-engine docker.io
