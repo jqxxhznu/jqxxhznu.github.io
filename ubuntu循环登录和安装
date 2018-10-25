@@ -1,0 +1,75 @@
+实践了孟凡胜学长的教程,遇到一个问题卡了20天,链接显示器的插线应该用转换头(注意转换头得是好的,都是泪啊)连接到显卡上而不是主板上.
+2018.10.18
+When use Ubuntu 16.04.2 LTS + Nvidia-375.66 + cuda 8.0 , something is terrible...
+
+Question1. Loop through the purple interface--solution : Follow the steps below 
+
+# 卸载掉原有驱动
+sudo apt-get remove –purge nvidia*
+
+# 禁用nouveau
+sudo vim /etc/modprobe.d/blacklist.conf
+
+# 在最后一行添加：
+# 禁用nouveau第三方驱动，之后也不需要改回来
+blacklist nouveau
+blacklist lbm-nouveau
+options nouveau modeset=0
+alias nouveau off
+alias lbm-nouveau off
+
+# 执行：
+sudo update-initramfs -u
+
+# 执行：
+# 没有输出即屏蔽好了
+lsmod | grep nouveau
+
+# 禁用X服务
+# 之后也不需要改回来
+sudo /etc/init.d/lightdm stop
+
+# 安装驱动(ctrl_alt+f1 命令行界面)
+# 给驱动run文件赋予执行权限
+sudo chmod a+x NVIDIA-Linux-x86_64-375.66.run
+
+# 安装(注意 参数)
+sudo ./NVIDIA-Linux-x86_64-375.20.run –no-opengl-files
+
+# –no-opengl-files 只安装驱动文件，不安装OpenGL文件。这个参数最重要!!!
+# –no-x-check 安装驱动时不检查X服务
+# –no-nouveau-check 安装驱动时不检查nouveau
+# 后面两个参数可不加。
+
+
+# 重启，并不会出现循环登录的问题
+
+
+Q2: After starting up the computer ,when want to get into Ubuntu,
+    it appears ""The system is running in low-graphics mode .....""
+
+Solution: need (ctrl_alt+f1 命令行界面) 
+
+    	sudo chown lightdm:lightdm -R /var/lib/lightdm
+
+	sudo chown avahi-autoipd:avahi-autoipd -R /var/lib/avahi-autoipd
+
+	sudo chown colord:colord -R /var/lib/colord
+	sudo reboot
+
+Q3: Ubuntu如何查看计算机安装好Cuda
+$  cd /usr/local/cuda/samples/1_Utilities/deviceQuery #由自己电脑目录决定
+$  make
+$  sudo ./deviceQuery
+
+#出现信息./deviceQuery Starting...
+           ............
+         Result = PASS....  ， 则表示cuda配置正确;
+
+Q4: Ubuntu如何查看计算机安装好Nvidia
+$   sudo apt-get install mesa-utils
+$   glxinfo | grep rendering
+# terminal appears information is OK --"direct rendering: Yes"
+
+
+
