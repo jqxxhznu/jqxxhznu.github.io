@@ -1,0 +1,109 @@
+ICCV2017最佳论文Mask R-CNN的代码复现 2018.10.29 by刘泽豪
+0.基于Python3，Keras，TensorFlow。
+Python 3.4+
+TensorFlow 1.3+
+Keras 2.0.8+
+Jupyter Notebook
+Numpy, skimage, scipy
+
+anaconda搭建环境,具体参照别的教程
+0.pip换源 
+gedit ~/.pip/pip.conf
+换这个 https://pypi.tuna.tsinghua.edu.cn/simple/ 
+在mask-rcnn下载目录下安装 pip3 install -r requirements.txt
+
+
+
+1.运行ballon气球识别的例子,这个例子最简单,用来验证代码没有问题
+1.1 下载代码
+git clone https://github.com/matterport/Mask_RCNN 
+
+1.2 下载.h5权重文件mask_rcnn_balloon.h5和测试图片balloon_dataset.zip
+下载地址为:https://github.com/matterport/Mask_RCNN/releases
+
+1.3将mask_rcnn_balloon.h5放置在Mask_RCNN目录下,将balloon_dataset.zip 解压到Mask_RCNN/datasets/balloon/ 注意这时候Mask_RCNN/datasets/balloon/ 目录下应该有解压出来的 train和 val两个文件夹
+
+1.4验证 
+在Mask_RCNN目录下输入 jupyter notebook,进入Mask_RCNN/samples/blloon 运行inspect_balloon_data.ipynb
+运行jupyter第一个cell应该出现Using TensorFlow backend.否则说明tensorflow或者Keras安装有问题
+之后每个cell正常运行进入第二个例子
+
+2.运行demo.ipynb
+2.1下载coco
+git clone  https://github.com/waleedka/coco
+
+2.2下载源文件后打开 coco/PythonAPI ，并在此目录下打开终端，进入之前新建的 Mask-RCNN 环境，运行 make 。
+注意:如果终端提示 Mask-RCNN 环境中缺少 Cython ，则重新安装后运行 make。
+
+2.3将生成的 pycocotools 文件夹复制到 Mask-RCNN 的源文件中即可
+注意:如果第一次生成失败,最好直接把整个coco重新删了重来,第二次生成不会覆盖第一次的
+
+2.4修改demo.ipnb文件
+在第一个cell,import coco 下面加入from mrcnn.config import Config
+验证:出现
+Configurationsweixin
+We'll be using a model trained on the MS-COCO dataset. The configurations of this model are in the CocoConfig class in coco.py.
+
+For inferencing, modify the configurations a bit to fit the task. To do so, sub-class the CocoConfig class and override the attributes you need to change.
+说明环境没问题
+
+重写第二个cell为
+class CocoConfig(Config):
+    """Configuration for training on MS COCO.
+    Derives from the base Config class and overrides values specific
+    to the COCO dataset.
+    """
+    # Give the configuration a recognizable name
+    NAME = "coco"
+
+    # We use a GPU with 12GB memory, which can fit two images.
+    # Adjust down if you use a smaller GPU.
+    IMAGES_PER_GPU = 2
+
+    # Uncomment to train on 8 GPUs (default is 1)
+    # GPU_COUNT = 8
+
+    # Number of classes (including background)
+    #NUM_CLASSES = 37  # COCO has 80 classes
+    NUM_CLASSES = 81
+
+#class InferenceConfig(coco.CocoConfig):
+class InferenceConfig(CocoConfig):
+    # Set batch size to 1 since we'll be running inference on
+    # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
+    GPU_COUNT = 1
+    IMAGES_PER_GPU = 1
+    #MAX_GT_INSTANCES = 100
+    #TRAIN_ROIS_PER_IMAGE = 50
+    #BACKBONE = "resnet50" #not working at all!
+    #RPN_ANCHOR_STRIDE = 2
+    POST_NMS_ROIS_TRAINING = 1000
+    POST_NMS_ROIS_INFERENCE = 500
+    IMAGE_MIN_DIM = 400 #really much faster but bad results
+    IMAGE_MAX_DIM = 512
+    #DETECTION_MAX_INSTANCES = 50 #a little faster but some instances not recognized
+
+config = InferenceConfig()
+config.display()
+
+否侧会报如下错:
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-32-97d3a69c5589> in <module>()
+     19 
+     20 #class InferenceConfig(coco.CocoConfig):
+---> 21 class InferenceConfig(coco.CocoConfig):
+     22     # Set batch size to 1 since we'll be running inference on
+     23     # one image at a time. Batch size = GPU_COUNT * IMAGES_PER_GPU
+
+AttributeError: module 'coco' has no attribute 'CocoConfig'
+感觉这里是一个BUG,自己瞎改的(可能有更好的办法),被坑了好久
+
+3.尝试运行coco并且训练
+3.1下载coco2014年的数据集，解压到Mask_RCNN/samples/coco/dataset 目录下
+3.2下载 mask_rcnn_coco.h5 放到Mask_RCNN目录下 下载地址https://github.com/matterport/Mask_RCNN/releases
+3.3修改COCO_DIR = "dataset"  dataset为coco的存放地址
+可能的错误：
+1.'matplotlib.cook'has no attritube这个错误需要卸载matplotlib重装即可
+
+
