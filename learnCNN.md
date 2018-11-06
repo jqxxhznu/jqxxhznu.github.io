@@ -7,7 +7,7 @@
   ####     2.1  添加#include <time.h> 
   ####     2.2  36行添加#define POOL_STOCHASTIC POOL_MAX 
   ####     2.3  开头添加 #define _CRT_SECURE_NO_WARNINGS
-### 3. 代码运行起来贼慢(((φ(◎ロ◎;)φ)))
+### 3. 代码运行起来贼慢(((φ(◎ロ◎;)φ))) 31次花了16分钟
 ![image](https://github.com/jqxxhznu/jqxxhznu.github.io/blob/master/images/cnn-1.png)
 ![image](https://github.com/jqxxhznu/jqxxhznu.github.io/blob/master/images/cnn-2%20.png)
 ***
