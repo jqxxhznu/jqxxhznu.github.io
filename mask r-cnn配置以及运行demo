@@ -1,4 +1,4 @@
-ICCV2017最佳论文Mask R-CNN的代码复现 2018.10.29 by刘泽豪
+ICCV2017最佳论文Mask R-CNN的代码复现 2018.10.29 by刘泽豪  11.28 已检查
 0.基于Python3，Keras，TensorFlow。
 Python 3.4+
 TensorFlow 1.3+
@@ -32,7 +32,7 @@ git clone https://github.com/matterport/Mask_RCNN
 2.1下载coco
 git clone  https://github.com/waleedka/coco
 
-2.2下载源文件后打开 coco/PythonAPI ，并在此目录下打开终端，进入之前新建的 Mask-RCNN 环境，运行 make 。
+2.2下载源文件后打开 coco/PythonAPI ，并在此目录下打开终端，运行 make 。
 注意:如果终端提示 Mask-RCNN 环境中缺少 Cython ，则重新安装后运行 make。
 
 2.3将生成的 pycocotools 文件夹复制到 Mask-RCNN 的源文件中即可
